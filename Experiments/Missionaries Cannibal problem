@@ -1,0 +1,63 @@
+from collections import deque
+
+def is_valid(state):
+    M_left, C_left, boat, M_right, C_right = state
+    # Non-negative and missionaries >= cannibals if missionaries present
+    if (M_left < 0 or C_left < 0 or M_right < 0 or C_right < 0):
+        return False
+    if (M_left > 0 and M_left < C_left):
+        return False
+    if (M_right > 0 and M_right < C_right):
+        return False
+    return True
+
+def get_successors(state, total_M, total_C):
+    M_left, C_left, boat, M_right, C_right = state
+    successors = []
+    moves = [(1,0), (2,0), (0,1), (0,2), (1,1)]  # Possible boat moves
+
+    for M, C in moves:
+        if boat == 1:  # Boat on left
+            new_state = (M_left - M, C_left - C, 0, M_right + M, C_right + C)
+            move_desc = f"{M} Missionary(ies) and {C} Cannibal(s) cross LEFT → RIGHT"
+        else:  # Boat on right
+            new_state = (M_left + M, C_left + C, 1, M_right - M, C_right - C)
+            move_desc = f"{M} Missionary(ies) and {C} Cannibal(s) cross RIGHT → LEFT"
+
+        if is_valid(new_state) and 0 <= new_state[0] <= total_M and 0 <= new_state[1] <= total_C:
+            successors.append((new_state, move_desc))
+    return successors
+
+def bfs(start, goal, total_M, total_C):
+    queue = deque([(start, [], [])])  # (state, path, moves)
+    visited = set()
+
+    while queue:
+        state, path, moves = queue.popleft()
+        if state in visited:
+            continue
+        visited.add(state)
+
+        if state == goal:
+            return path + [state], moves
+
+        for successor, move_desc in get_successors(state, total_M, total_C):
+            queue.append((successor, path + [state], moves + [move_desc]))
+    return None, None
+
+# 🔹 User Input
+M = int(input("Enter number of Missionaries: "))
+C = int(input("Enter number of Cannibals: "))
+
+start = (M, C, 1, 0, 0)   # boat starts on left
+goal = (0, 0, 0, M, C)    # all on right
+
+solution, moves = bfs(start, goal, M, C)
+
+if solution:
+    print("\nSteps to solve Missionaries and Cannibals Problem:\n")
+    for i in range(len(moves)):
+        print(f"Step {i+1}: {moves[i]}")
+        print(f"    State: {solution[i+1]}")
+else:
+    print("No solution found.")
