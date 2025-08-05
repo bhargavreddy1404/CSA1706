@@ -1,0 +1,26 @@
+def dfs_iterative(graph, start):
+    visited = set()
+    stack = [start]
+
+    print("\nDFS Traversal (Iterative):")
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            # Add neighbors in reverse order for correct traversal
+            stack.extend(reversed(graph[node]))
+    print()
+
+# 🔹 Taking Graph Input
+graph = {}
+n = int(input("Enter number of nodes: "))
+
+for i in range(n):
+    node = input(f"Enter node {i+1}: ")
+    neighbors = input(f"Enter neighbors of {node} (space-separated): ").split()
+    graph[node] = neighbors
+
+start = input("Enter the starting node: ")
+
+dfs_iterative(graph, start)
