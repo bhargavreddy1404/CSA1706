@@ -1,0 +1,41 @@
+def is_safe(node, color, assignment, graph):
+    for neighbor in graph[node]:
+        if neighbor in assignment and assignment[neighbor] == color:
+            return False
+    return True
+
+def csp_backtracking(graph, colors, assignment={}):
+    if len(assignment) == len(graph):
+        return assignment
+
+    unassigned = [node for node in graph if node not in assignment]
+    node = unassigned[0]
+
+    for color in colors:
+        if is_safe(node, color, assignment, graph):
+            assignment[node] = color
+            result = csp_backtracking(graph, colors, assignment)
+            if result:
+                return result
+            assignment.pop(node)
+    return None
+
+# 🔹 User Input
+graph = {}
+n = int(input("Enter number of regions: "))
+
+for i in range(n):
+    region = input(f"Enter region {i+1} name: ")
+    neighbors = input(f"Enter neighbors of {region} (space-separated): ").split()
+    graph[region] = neighbors
+
+colors = input("Enter available colors (space-separated): ").split()
+
+solution = csp_backtracking(graph, colors)
+
+if solution:
+    print("\nMap Coloring Solution:")
+    for region, color in solution.items():
+        print(f"{region} -> {color}")
+else:
+    print("No solution found.")
