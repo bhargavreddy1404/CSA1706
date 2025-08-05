@@ -1,0 +1,64 @@
+import math
+
+def entropy(data, target_attr):
+    values = [record[target_attr] for record in data]
+    freq = {val: values.count(val) for val in set(values)}
+    return sum((-count/len(values)) * math.log2(count/len(values)) for count in freq.values())
+
+def gain(data, attr, target_attr):
+    total_entropy = entropy(data, target_attr)
+    values = [record[attr] for record in data]
+    freq = {val: values.count(val) for val in set(values)}
+    subset_entropy = 0
+    for val, count in freq.items():
+        subset = [record for record in data if record[attr] == val]
+        subset_entropy += (count/len(values)) * entropy(subset, target_attr)
+    return total_entropy - subset_entropy
+
+def majority_class(data, target_attr):
+    values = [record[target_attr] for record in data]
+    return max(set(values), key=values.count)
+
+def id3(data, attributes, target_attr):
+    values = [record[target_attr] for record in data]
+    if values.count(values[0]) == len(values):
+        return values[0]
+    if not attributes:
+        return majority_class(data, target_attr)
+
+    best_attr = max(attributes, key=lambda attr: gain(data, attr, target_attr))
+    tree = {best_attr: {}}
+
+    for val in set(record[best_attr] for record in data):
+        subset = [record for record in data if record[best_attr] == val]
+        if not subset:
+            tree[best_attr][val] = majority_class(data, target_attr)
+        else:
+            new_attrs = [a for a in attributes if a != best_attr]
+            tree[best_attr][val] = id3(subset, new_attrs, target_attr)
+    return tree
+
+def print_tree(tree, indent=""):
+    if isinstance(tree, dict):
+        for key, branches in tree.items():
+            for val, subtree in branches.items():
+                print(f"{indent}{key} = {val}:")
+                print_tree(subtree, indent + "  ")
+    else:
+        print(f"{indent}{tree}")
+
+# 🔹 User Input
+n = int(input("Enter number of records: "))
+attributes = input("Enter attribute names (space-separated, last one is target): ").split()
+target_attr = attributes[-1]
+
+data = []
+for i in range(n):
+    record_values = input(f"Enter values for record {i+1} ({' '.join(attributes)}): ").split()
+    record = dict(zip(attributes, record_values))
+    data.append(record)
+
+tree = id3(data, attributes[:-1], target_attr)
+
+print("\nDecision Tree:")
+print_tree(tree)
