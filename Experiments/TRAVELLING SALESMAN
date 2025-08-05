@@ -1,0 +1,46 @@
+import itertools
+
+def travelling_salesman(distance_matrix, start):
+    n = len(distance_matrix)
+    cities = list(range(n))
+    cities.remove(start)
+
+    min_path = None
+    min_cost = float('inf')
+
+    for perm in itertools.permutations(cities):
+        current_cost = 0
+        k = start
+        path = [start]
+
+        for j in perm:
+            current_cost += distance_matrix[k][j]
+            k = j
+            path.append(j)
+
+        current_cost += distance_matrix[k][start]  # return to start
+        path.append(start)
+
+        if current_cost < min_cost:
+            min_cost = current_cost
+            min_path = path
+
+    return min_path, min_cost
+
+
+# 🔹 User Input
+n = int(input("Enter number of cities: "))
+distance_matrix = []
+
+print("\nEnter the distance matrix row by row:")
+for i in range(n):
+    row = list(map(int, input(f"Row {i+1}: ").split()))
+    distance_matrix.append(row)
+
+start = int(input(f"\nEnter the starting city (0 to {n-1}): "))
+
+path, cost = travelling_salesman(distance_matrix, start)
+
+print("\nOptimal Path (Travelling Salesman Solution):")
+print(" -> ".join(map(str, path)))
+print(f"Minimum Cost: {cost}")
