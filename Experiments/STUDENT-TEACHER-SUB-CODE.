@@ -1,0 +1,11 @@
+student_subject(bhargav,ai).
+student_subject(jyothi,maths).
+student_subject(prabhas,physics).
+
+student_teacher(bhargav,sharma).
+student_teacher(jyothi,ragavendra).
+student_teacher(prabhas,amala).
+
+student_teacher(Student,Teacher):-
+    student_subject(Student,Subject),
+    teacher_subject(Teacher,Subject).
