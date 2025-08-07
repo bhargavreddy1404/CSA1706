@@ -1,0 +1,22 @@
+%Facts: food_type(food,type).
+food_type(apple,fruit).
+food_type(sweet,sugar).
+food_type(pizza,fat).
+food_type(rice,grain).
+
+
+%disease_advice(Disease,ForbiddenType,RecommendedType).
+
+disease_advice(diabetes,sugar,grain).
+disease_advice(over_weight,fat,fruit).
+
+
+%recomnded_food_type(Disease,RecommendedType).
+
+suggest_food(Disease, Food) :-
+    disease_advice(Disease, _,RecommendedType),
+    food_type(Food,RecommendedType).
+
+avoid_food(Disease, Food) :-
+    disease_advice(Disease,ForbiddenType, _),
+    food_type(Food, ForbiddenType).
