@@ -1,0 +1,17 @@
+parent(p,a).
+parent(p,r).
+parent(r,b).
+parent(a,j).
+parent(a,l).
+
+child(X,Y):-
+    parent(Y,X).
+
+grandparent(X,Z):-
+    parent(X,Y),
+    parent(Y,Z).
+
+sibling(X,Y):-
+    parent(Z,X),
+    parent(Z,Y),
+    X\=Y.
