@@ -1,0 +1,10 @@
+% Base case: Move 1 disk directly
+hanoi(1, Source, Destination, _) :-
+    format('Move disk from ~w to ~w~n', [Source, Destination]).
+
+hanoi(N,Source ,Destination, Auxiliary):-
+    N>1,
+    N_minus_1 is N-1,
+    hanoi(N_minus_1,Source,Auxiliary,Destination),
+    hanoi(1,Source,Destination, _),
+    hanoi(N_minus_1,Auxiliary,Destination,Source).
