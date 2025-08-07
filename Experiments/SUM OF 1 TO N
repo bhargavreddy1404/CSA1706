@@ -1,0 +1,7 @@
+sum_up_to(0,0).
+
+sum_up_to(N,S):-
+    N>0,
+N_prev is N-1,
+sum_up_to(N_prev,S_prev),
+S is N+S_prev.
