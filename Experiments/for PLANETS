@@ -1,0 +1,16 @@
+% Facts: planet(Name, Type, DistanceFromSun, HasRings).
+planet(mercury, rocky, 0.4, false).
+planet(venus, rocky, 0.7, false).
+planet(earth, rocky, 1.0, false).
+planet(mars, rocky, 1.5, false).
+planet(jupiter, gas_giant, 5.2, true).
+planet(saturn, gas_giant, 9.5, true).
+planet(uranus, ice_giant, 19.2, true).
+planet(neptune, ice_giant, 30.1, true).
+
+
+rocky_planet(Name):-
+    planet(Name,rocky, _, _).
+
+has_rings(Name):-
+    planet(Name, _, _,true).
