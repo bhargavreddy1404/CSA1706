@@ -1,0 +1,8 @@
+can_fly(paarot).
+can_fly(eagle).
+
+cannot_fly(peacock).
+cannot_fly(duck).
+
+flies(Bird):-
+    can_fly(Bird).
