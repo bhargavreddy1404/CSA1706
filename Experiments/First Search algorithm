@@ -1,0 +1,39 @@
+% Heuristic values for each node (h(n))
+heuristic(a, 10).
+heuristic(b, 5).
+heuristic(c, 7).
+heuristic(d, 4).
+heuristic(e, 3).
+heuristic(f, 6).
+heuristic(g, 0). % The goal node has a heuristic of 0
+
+% Graph edges
+edge(a, b).
+edge(a, c).
+edge(b, d).
+edge(b, e).
+edge(c, f).
+edge(d, g).
+edge(e, g).
+edge(f, g).
+
+% best_first_search(Start, Goal, Path)
+best_first_search(Start, Goal, Path) :-
+    heuristic(Start, H),
+    OpenList = [[H, [Start]]],
+    search(OpenList, [Start], Goal, Path).
+
+% search(OpenList, ClosedList, Goal, Path)
+search([[_, [Goal|Path]]|_], _, Goal, [Goal|Path]).
+
+search([[_, [Node|PathSoFar]] | RestOpen], Closed, Goal, FinalPath) :-
+    findall([H_child, [Child | [Node|PathSoFar]]],
+            (edge(Node, Child); edge(Child, Node)),
+            Children),
+    subtract(Children, Closed, UnvisitedChildren),
+    append(UnvisitedChildren, RestOpen, TempOpenList),
+    sort(0, @=<, TempOpenList, NewOpenList),
+    search(NewOpenList, [Node|Closed], Goal, FinalPath).
+
+% Query to find the path from 'a' to 'g'
+% ?- best_first_search(a, g, Path).
