@@ -1,0 +1,24 @@
+% Initial facts
+fact(bird(tweety)).
+fact(animal(X)) :- fact(bird(X)).
+fact(can_fly(X)) :- fact(bird(X)).
+fact(has_feathers(X)) :- fact(can_fly(X)).
+
+% The forward_chain predicate applies the rules to derive new facts.
+% This is a simplified simulation and a more robust implementation would use dynamic predicates.
+forward_chain :-
+    (   fact(X),
+        not(is_a(X, Y)),
+        (animal(X) -> assertz(is_a(X, animal));
+         bird(X) -> assertz(is_a(X, bird));
+         can_fly(X) -> assertz(is_a(X, can_fly));
+         has_feathers(X) -> assertz(is_a(X, has_feathers))
+        )
+    ),
+    fail.
+forward_chain.
+
+% To demonstrate, load the code and then run the queries:
+% ?- fact(X).       % Will show the initial facts
+% ?- forward_chain. % Runs the chaining process (this will fail by design to iterate)
+% ?- is_a(tweety, Y). % Now queries the inferred facts
