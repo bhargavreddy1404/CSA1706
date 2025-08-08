@@ -1,0 +1,58 @@
+% state(MonkeyPos, BoxPos, MonkeyOnBox, HasBananas)
+% MonkeyPos, BoxPos can be 'at_door', 'at_window', 'in_middle' etc.
+% MonkeyOnBox can be 'on_floor', 'on_box'
+% HasBananas can be 'have_not', 'have'
+
+% Goal state: The monkey has the bananas.
+goal_state(state(_, _, _, have)).
+
+% move predicate: move(Action, CurrentState, NewState)
+% This defines the rules for valid state transitions.
+
+% 1. grab(bananas): The monkey grabs the bananas if it's on the box and at the same location as the bananas.
+move(grab, 
+    state(in_middle, in_middle, on_box, have_not), 
+    state(in_middle, in_middle, on_box, have)).
+
+% 2. climb(box): The monkey climbs the box if it's at the same location as the box.
+move(climb,
+    state(Pos, Pos, on_floor, Have),
+    state(Pos, Pos, on_box, Have)).
+
+% 3. push(box, From, To): The monkey pushes the box from one location to another.
+% The monkey and the box must be at the same location, and the monkey must be on the floor.
+move(push(From, To),
+    state(From, From, on_floor, Have),
+    state(To, To, on_floor, Have)).
+
+% 4. walk(From, To): The monkey walks from one location to another.
+% The box and the monkey's position can be different.
+move(walk(From, To),
+    state(From, BoxPos, on_floor, Have),
+    state(To, BoxPos, on_floor, Have)).
+
+% The path-finding logic:
+% The `can_get` predicate finds a sequence of moves to reach the goal.
+% It uses recursion with a list of visited states to prevent infinite loops.
+
+can_get(State) :- 
+    goal_state(State).
+
+can_get(State) :-
+    move(_, State, NextState), % Find a valid move from the current state.
+    \+ goal_state(NextState), % Make sure the next state is not the goal.
+    can_get(NextState). % Recursively find a path from the next state.
+
+% This is a more robust version using a list of visited states.
+% can_get_path(CurrentState, Path, VisitedStates)
+% It finds the sequence of moves to reach the goal.
+path(State, Path) :-
+    path_finder(State, [State], Path).
+
+path_finder(State, _, []) :-
+    goal_state(State).
+
+path_finder(State, Visited, [Action|Rest]) :-
+    move(Action, State, NextState),
+    \+ member(NextState, Visited), % Ensure we haven't visited this state before.
+    path_finder(NextState, [NextState|Visited], Rest).
