@@ -1,0 +1,31 @@
+% Facts: symptoms
+symptom(patient1, fever).
+symptom(patient1, cough).
+symptom(patient1, fatigue).
+symptom(patient2, sore_throat).
+symptom(patient2, headache).
+symptom(patient3, stomach_ache).
+symptom(patient3, vomiting).
+symptom(patient3, fever).
+
+% Rules: diagnose
+% A cold is diagnosed if the patient has a fever, cough, and fatigue.
+illness(Patient, cold) :-
+    symptom(Patient, fever),
+    symptom(Patient, cough),
+    symptom(Patient, fatigue).
+
+% The flu is diagnosed if the patient has a fever, headache, and sore_throat.
+illness(Patient, flu) :-
+    symptom(Patient, fever),
+    symptom(Patient, headache),
+    symptom(Patient, sore_throat).
+
+% Food poisoning is diagnosed if the patient has a stomach_ache and vomiting.
+illness(Patient, food_poisoning) :-
+    symptom(Patient, stomach_ache),
+    symptom(Patient, vomiting).
+
+% Query the system for diagnoses
+% ?- illness(patient1, Diagnosis).
+% ?- illness(P, flu).
