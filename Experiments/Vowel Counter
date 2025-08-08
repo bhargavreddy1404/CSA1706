@@ -1,0 +1,25 @@
+% is_vowel(Char) - checks if a character is a vowel
+is_vowel(a).
+is_vowel(e).
+is_vowel(i).
+is_vowel(o).
+is_vowel(u).
+
+% count_vowels(+List, -Count)
+% Base case: an empty list has 0 vowels.
+count_vowels([], 0).
+
+% Recursive case 1: The head is a vowel. Increment the count and recurse.
+count_vowels([H|T], Count) :-
+    is_vowel(H),
+    count_vowels(T, RestCount),
+    Count is RestCount + 1.
+
+% Recursive case 2: The head is not a vowel. The count does not change.
+count_vowels([H|T], Count) :-
+    \+ is_vowel(H),
+    count_vowels(T, Count).
+
+% Example queries:
+% ?- count_vowels([h, e, l, l, o], Count). % Count will be 2
+% ?- count_vowels(hello, Count).           % Prolog treats "hello" as a list of characters, so this also works
