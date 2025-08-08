@@ -1,0 +1,29 @@
+% Facts: symptoms (used as a knowledge base)
+symptom(X, fever) :- write(X), write(' has a fever? '), read(yes).
+symptom(X, cough) :- write(X), write(' has a cough? '), read(yes).
+symptom(X, fatigue) :- write(X), write(' has fatigue? '), read(yes).
+symptom(X, sore_throat) :- write(X), write(' has a sore throat? '), read(yes).
+symptom(X, headache) :- write(X), write(' has a headache? '), read(yes).
+symptom(X, stomach_ache) :- write(X), write(' has a stomach ache? '), read(yes).
+symptom(X, vomiting) :- write(X), write(' has vomiting? '), read(yes).
+
+% Rules (same as before, but this time they are used for backward chaining)
+illness(Patient, cold) :-
+    symptom(Patient, fever),
+    symptom(Patient, cough),
+    symptom(Patient, fatigue).
+
+illness(Patient, flu) :-
+    symptom(Patient, fever),
+    symptom(Patient, headache),
+    symptom(Patient, sore_throat).
+
+illness(Patient, food_poisoning) :-
+    symptom(Patient, stomach_ache),
+    symptom(Patient, vomiting).
+
+% The required query to start the diagnosis:
+% ?- illness(john, Diagnosis).
+% Prolog will ask for each symptom needed to prove a rule.
+% For example, to prove 'illness(john, cold)', Prolog will query 'symptom(john, fever)'
+% first, then 'symptom(john, cough)', and so on.
