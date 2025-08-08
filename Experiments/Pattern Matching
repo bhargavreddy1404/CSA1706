@@ -1,0 +1,19 @@
+% facts to demonstrate pattern matching
+my_data(person(name(john), age(30))).
+my_data(product(id(123), price(199))).
+my_data(list_data([1, 2, 3])).
+
+% This predicate will succeed for any term with the structure 'person(name, age)'
+match_person(person(name(Name), age(Age))) :-
+    write('Found a person named '), write(Name), write(' of age '), write(Age), nl.
+
+% This predicate will succeed for any list with at least three elements
+match_list([A, B, C | _]) :-
+    write('Found a list with at least three elements: '),
+    write(A), write(', '), write(B), write(', '), write(C), nl.
+
+% To run these examples, use the following queries:
+% ?- match_person(person(name(alice), age(25))). % Unifies and succeeds
+% ?- match_person(my_data(X)).                  % Fails as the argument is not a person structure
+% ?- match_list([1, 2, 3, 4]).                  % Succeeds
+% ?- match_list([1, 2]).                        % Fails
